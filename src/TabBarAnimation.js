@@ -15,7 +15,6 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(Pressable);
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
-const ON_TWO = 2;
 const ICON_COUNT = 3;
 const arr = new Array(ICON_COUNT).fill("");
 const ICON_WIDTH = 40;
@@ -24,11 +23,9 @@ const ICON_HEIGHT = 30;
 const BALL_WIDTH_HEIGHT = 12;
 const ICON_CONTAINER_HEIGHT = 130;
 const MARGIN_LEFT = (WINDOW_WIDTH - ICON_WIDTH * ICON_COUNT) / 4;
-const HILL_MARGIN_TOP = WINDOW_HEIGHT / ON_TWO + ICON_CONTAINER_HEIGHT / ON_TWO;
-const ICON_CONTAINER_PADDING_TOP =
-  ICON_CONTAINER_HEIGHT / ON_TWO - ICON_HEIGHT / ON_TWO;
-const BALL_MARGIN_LEFT =
-  MARGIN_LEFT + (ICON_WIDTH / ON_TWO - BALL_WIDTH_HEIGHT / ON_TWO);
+const HILL_MARGIN_TOP = WINDOW_HEIGHT / 2 + ICON_CONTAINER_HEIGHT / 2;
+const ICON_CONTAINER_PADDING_TOP = ICON_CONTAINER_HEIGHT / 2 - ICON_HEIGHT / 2;
+const BALL_MARGIN_LEFT = MARGIN_LEFT + (ICON_WIDTH / 2 - BALL_WIDTH_HEIGHT / 2);
 
 const IconsComp = ({ tappedIndex, hill, ballY, vertex, i }) => {
   const iconY = useSharedValue(0);
