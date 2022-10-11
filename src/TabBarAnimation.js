@@ -17,7 +17,7 @@ const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const ICON_COUNT = 3;
 const arr = new Array(ICON_COUNT).fill("");
-const ICON_WIDTH = 40;
+const ICON_WIDTH = 30;
 const HILL_WIDTH = 70;
 const ICON_HEIGHT = 30;
 const BALL_WIDTH_HEIGHT = 12;
@@ -30,6 +30,7 @@ const BALL_MARGIN_LEFT = MARGIN_LEFT + (ICON_WIDTH / 2 - BALL_WIDTH_HEIGHT / 2);
 const IconsComp = ({ tappedIndex, hill, ballY, vertex, i }) => {
   const iconY = useSharedValue(0);
   const fill = useSharedValue(0);
+
   const height = useSharedValue(0);
 
   const iconYStyle = useAnimatedStyle(() => {
@@ -41,7 +42,9 @@ const IconsComp = ({ tappedIndex, hill, ballY, vertex, i }) => {
   const filled = useDerivedValue(() => {
     const isTrue = i === tappedIndex.value;
     fill.value = isTrue ? 1 : 0;
-    return withDelay(300, withTiming(fill.value));
+    return isTrue
+      ? withDelay(500, withTiming(fill.value, { duration: 200 }))
+      : withTiming(fill.value);
   });
 
   const iconFillStyle = useAnimatedStyle(() => {
@@ -57,11 +60,7 @@ const IconsComp = ({ tappedIndex, hill, ballY, vertex, i }) => {
           translateY: (height.value / 2) * -1,
         },
       ],
-      borderRadius: interpolate(
-        filled.value,
-        [0, 0.5, 0.9, 1],
-        [10, 30, 30, 0]
-      ),
+      borderRadius: interpolate(filled.value, [0, 1], [50, 0]),
     };
   });
 
@@ -74,7 +73,7 @@ const IconsComp = ({ tappedIndex, hill, ballY, vertex, i }) => {
     });
 
     vertex.value = withTiming(-16, {}, () => {
-      ballY.value = withTiming(1, {}, () => {
+      ballY.value = withTiming(1, { duration: 376 }, () => {
         ballY.value = 0;
       });
       vertex.value = withTiming(-40, {}, () => {
@@ -185,7 +184,7 @@ const styles = StyleSheet.create({
   svgStyle: {
     height: WINDOW_HEIGHT,
     width: WINDOW_WIDTH,
-    marginLeft: MARGIN_LEFT - 14,
+    marginLeft: MARGIN_LEFT - 20,
   },
 });
 
