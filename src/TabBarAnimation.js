@@ -13,7 +13,7 @@ import Animated, {
 import Svg, { Path } from "react-native-svg";
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(Pressable);
-const { width, height } = Dimensions.get("window");
+const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const ON_TWO = 2;
 const ICON_COUNT = 3;
@@ -23,8 +23,8 @@ const HILL_WIDTH = 70;
 const ICON_HEIGHT = 30;
 const BALL_WIDTH_HEIGHT = 12;
 const ICON_CONTAINER_HEIGHT = 130;
-const MARGIN_LEFT = (width - ICON_WIDTH * ICON_COUNT) / 4;
-const HILL_MARGIN_TOP = height / ON_TWO + ICON_CONTAINER_HEIGHT / ON_TWO;
+const MARGIN_LEFT = (WINDOW_WIDTH - ICON_WIDTH * ICON_COUNT) / 4;
+const HILL_MARGIN_TOP = WINDOW_HEIGHT / ON_TWO + ICON_CONTAINER_HEIGHT / ON_TWO;
 const ICON_CONTAINER_PADDING_TOP =
   ICON_CONTAINER_HEIGHT / ON_TWO - ICON_HEIGHT / ON_TWO;
 const BALL_MARGIN_LEFT =
@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
     marginLeft: BALL_MARGIN_LEFT,
   },
   svgStyle: {
-    height,
-    width,
+    height: WINDOW_HEIGHT,
+    width: WINDOW_WIDTH,
     marginLeft: MARGIN_LEFT - 14,
   },
 });
