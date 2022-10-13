@@ -11,6 +11,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
+
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(Pressable);
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
@@ -22,10 +23,12 @@ const HILL_WIDTH = 70;
 const ICON_HEIGHT = 30;
 const BALL_WIDTH_HEIGHT = 12;
 const ICON_CONTAINER_HEIGHT = 130;
-const MARGIN_LEFT = (WINDOW_WIDTH - ICON_WIDTH * ICON_COUNT) / 4;
+const ICON_MARGIN_LEFT = (WINDOW_WIDTH - ICON_WIDTH * ICON_COUNT) / 4;
+const HILL_MARGIN_LEFT = ICON_MARGIN_LEFT - (HILL_WIDTH - ICON_WIDTH) / 2;
 const HILL_MARGIN_TOP = WINDOW_HEIGHT / 2 + ICON_CONTAINER_HEIGHT / 2;
 const ICON_CONTAINER_PADDING_TOP = ICON_CONTAINER_HEIGHT / 2 - ICON_HEIGHT / 2;
-const BALL_MARGIN_LEFT = MARGIN_LEFT + (ICON_WIDTH / 2 - BALL_WIDTH_HEIGHT / 2);
+const BALL_MARGIN_LEFT =
+  ICON_MARGIN_LEFT + (ICON_WIDTH / 2 - BALL_WIDTH_HEIGHT / 2);
 
 const IconsComp = ({ tappedIndex, hill, ballY, vertex, i }) => {
   const iconY = useSharedValue(0);
@@ -54,13 +57,13 @@ const IconsComp = ({ tappedIndex, hill, ballY, vertex, i }) => {
           translateY: (height.value / 2) * 1,
         },
         {
-          scale: interpolate(filled.value, [0, 1], [0, 1]),
+          translateY: interpolate(filled.value, [0, 1], [30, 0]),
         },
         {
           translateY: (height.value / 2) * -1,
         },
       ],
-      borderRadius: interpolate(filled.value, [0, 1], [50, 0]),
+      // borderRadius: interpolate(filled.value, [0, 1], [50, 0]),
     };
   });
 
@@ -106,7 +109,7 @@ const TabBarAnimation = () => {
   const tappedIndex = useSharedValue(-1);
 
   const path = useDerivedValue(() => {
-    hillX.value = withTiming(hill.value * (MARGIN_LEFT + ICON_WIDTH));
+    hillX.value = withTiming(hill.value * (ICON_MARGIN_LEFT + ICON_WIDTH));
 
     return `M ${hillX.value} ${HILL_MARGIN_TOP} c 35 ${vertex.value} 35 ${vertex.value} ${HILL_WIDTH} 0`;
   });
@@ -121,7 +124,7 @@ const TabBarAnimation = () => {
     return {
       transform: [
         {
-          translateX: withTiming(hill.value * (MARGIN_LEFT + ICON_WIDTH)),
+          translateX: withTiming(hill.value * (ICON_MARGIN_LEFT + ICON_WIDTH)),
         },
         {
           translateY: interpolate(ballY.value, [0, 1], [0, -52]),
@@ -163,9 +166,10 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "lightgrey",
+    overflow: "hidden",
     width: ICON_WIDTH,
     height: ICON_HEIGHT,
-    marginLeft: MARGIN_LEFT,
+    marginLeft: ICON_MARGIN_LEFT,
   },
   fill: {
     backgroundColor: "black",
@@ -184,7 +188,7 @@ const styles = StyleSheet.create({
   svgStyle: {
     height: WINDOW_HEIGHT,
     width: WINDOW_WIDTH,
-    marginLeft: MARGIN_LEFT - 20,
+    marginLeft: HILL_MARGIN_LEFT,
   },
 });
 
