@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import TabBarAnimation from "./src/TabBarAnimation";
 
 export default function App() {
@@ -12,7 +12,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "#3e3c4a",
   },
 });

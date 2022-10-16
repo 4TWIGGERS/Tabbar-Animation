@@ -10,35 +10,48 @@ import Animated, {
   withSpring,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Path, Defs, Rect, Mask } from "react-native-svg";
+import { D } from "./consts";
+
+import Navigation from "./Navigation";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(Pressable);
+const AnimatedSvg = Animated.createAnimatedComponent(Svg);
+const AnimatedButton = Animated.createAnimatedComponent(Pressable);
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 
 const ICON_COUNT = 3;
 const arr = new Array(ICON_COUNT).fill("");
 const ICON_WIDTH = 30;
-const HILL_WIDTH = 70;
 const ICON_HEIGHT = 30;
-const BALL_WIDTH_HEIGHT = 12;
-const ICON_CONTAINER_HEIGHT = 130;
-const ICON_MARGIN_LEFT = (WINDOW_WIDTH - ICON_WIDTH * ICON_COUNT) / 4;
-const HILL_MARGIN_LEFT = ICON_MARGIN_LEFT - (HILL_WIDTH - ICON_WIDTH) / 2;
-const HILL_MARGIN_TOP = WINDOW_HEIGHT / 2 + ICON_CONTAINER_HEIGHT / 2;
-const ICON_CONTAINER_PADDING_TOP = ICON_CONTAINER_HEIGHT / 2 - ICON_HEIGHT / 2;
+const FILL_HEIGHT = 30;
+const HILL_WIDTH = 70;
+const BALL_WIDTH_HEIGHT = 8;
+const ICON_CONT_MARGIN_LEFT = 18;
+const ICON_CONTAINER_HEIGHT = 110;
+const ICON_CONTAINER_BOTTOM = 20;
+const ICON_CONTAINER_WIDTH = WINDOW_WIDTH - ICON_CONT_MARGIN_LEFT * 2;
+const HILL_MARGIN_TOP = WINDOW_HEIGHT - ICON_CONTAINER_BOTTOM;
+const ICON_MARGIN_LEFT = (ICON_CONTAINER_WIDTH - ICON_WIDTH * ICON_COUNT) / 4;
+const ICON_CONTAINER_PADDING_TOP =
+  ICON_CONTAINER_HEIGHT / 2.4 - ICON_HEIGHT / 2;
+const HILL_MARGIN_LEFT =
+  ICON_MARGIN_LEFT + ICON_CONT_MARGIN_LEFT - (HILL_WIDTH - ICON_WIDTH) / 2;
 const BALL_MARGIN_LEFT =
   ICON_MARGIN_LEFT + (ICON_WIDTH / 2 - BALL_WIDTH_HEIGHT / 2);
 
-const IconsComp = ({ tappedIndex, hill, ballY, vertex, i }) => {
+const IconsComp = ({ tappedIndex, hill, ballY, vertex, i, iconContValue }) => {
   const iconY = useSharedValue(0);
   const fill = useSharedValue(0);
-
   const height = useSharedValue(0);
 
   const iconYStyle = useAnimatedStyle(() => {
     return {
-      top: interpolate(iconY.value, [0, 1], [1, 10]),
+      transform: [
+        {
+          translateY: interpolate(iconY.value, [0, 1], [0, 10]),
+        },
+      ],
     };
   });
 
@@ -46,7 +59,12 @@ const IconsComp = ({ tappedIndex, hill, ballY, vertex, i }) => {
     const isTrue = i === tappedIndex.value;
     fill.value = isTrue ? 1 : 0;
     return isTrue
-      ? withDelay(500, withTiming(fill.value, { duration: 200 }))
+      ? withDelay(
+          500,
+          withTiming(fill.value, {
+            duration: 200,
+          })
+        )
       : withTiming(fill.value);
   });
 
@@ -57,19 +75,23 @@ const IconsComp = ({ tappedIndex, hill, ballY, vertex, i }) => {
           translateY: (height.value / 2) * 1,
         },
         {
-          translateY: interpolate(filled.value, [0, 1], [30, 0]),
+          scale: interpolate(filled.value, [0, 1], [0, 1]),
         },
         {
           translateY: (height.value / 2) * -1,
         },
       ],
-      // borderRadius: interpolate(filled.value, [0, 1], [50, 0]),
+      borderRadius: interpolate(filled.value, [0, 1], [50, 0]),
     };
   });
 
   const _onPress = () => {
-    tappedIndex.value = i;
     hill.value = i;
+    tappedIndex.value = i;
+
+    iconContValue.value = withTiming(!iconContValue.value, {}, () => {
+      iconContValue.value = withTiming(0);
+    });
 
     iconY.value = withTiming(1, {}, () => {
       iconY.value = withSpring(0);
@@ -86,18 +108,43 @@ const IconsComp = ({ tappedIndex, hill, ballY, vertex, i }) => {
   };
 
   return (
-    <AnimatedTouchableOpacity
-      onPress={_onPress}
-      key={i}
-      style={[styles.button, iconYStyle]}
-    >
-      <Animated.View
-        onLayout={({ nativeEvent: { layout } }) => {
-          height.value = layout.height;
-        }}
-        style={[styles.fill, iconFillStyle]}
-      />
-    </AnimatedTouchableOpacity>
+    <View>
+      <AnimatedButton
+        // onPress={_onPress}
+        key={i}
+        style={[styles.button, iconYStyle]}
+      >
+        <Animated.View
+          onLayout={({ nativeEvent: { layout } }) => {
+            height.value = layout.height;
+          }}
+          style={[styles.fill, iconFillStyle]}
+        />
+      </AnimatedButton>
+      <AnimatedSvg
+        onPress={_onPress}
+        height={30}
+        width={30}
+        style={[styles.animatedSvg, iconYStyle]}
+      >
+        <Defs>
+          <Mask id='mask' x='0' y='0' height={30} width={30}>
+            <Rect x={0} y={0} rx={0} height={30} width={30} fill='#fff' />
+            <Path x={0} y={0} d={D[i]} fill='#000' />
+          </Mask>
+        </Defs>
+        <Rect
+          mask='url(#mask)'
+          x={0}
+          y={0}
+          rx={0}
+          height={30}
+          width={30}
+          fill='gold'
+          fill-opacity='0'
+        />
+      </AnimatedSvg>
+    </View>
   );
 };
 
@@ -106,10 +153,13 @@ const TabBarAnimation = () => {
   const hillX = useSharedValue(0);
   const ballY = useSharedValue(0);
   const vertex = useSharedValue(-30);
-  const tappedIndex = useSharedValue(-1);
+  const tappedIndex = useSharedValue(0);
+  const iconContValue = useSharedValue(0);
 
   const path = useDerivedValue(() => {
-    hillX.value = withTiming(hill.value * (ICON_MARGIN_LEFT + ICON_WIDTH));
+    hillX.value = withTiming(
+      tappedIndex.value * (ICON_MARGIN_LEFT + ICON_WIDTH)
+    );
 
     return `M ${hillX.value} ${HILL_MARGIN_TOP} c 35 ${vertex.value} 35 ${vertex.value} ${HILL_WIDTH} 0`;
   });
@@ -132,63 +182,83 @@ const TabBarAnimation = () => {
       ],
     };
   });
+  const iconContainerStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: interpolate(iconContValue.value, [0, 1], [1, 0.99]),
+        },
+      ],
+    };
+  });
 
   return (
     <View style={styles.container}>
-      <View style={styles.iconContainer}>
+      <Navigation {...{ tappedIndex }} />
+      <Animated.View style={[styles.iconContainer, iconContainerStyle]}>
         {arr.map((_, i) => (
-          <IconsComp {...{ tappedIndex, hill, ballY, vertex, i }} key={i} />
+          <IconsComp
+            {...{ tappedIndex, hill, ballY, vertex, i, iconContValue }}
+            key={i}
+          />
         ))}
         <Animated.View style={[styles.ball, ballStyle]} />
-      </View>
-
+      </Animated.View>
       <Svg style={styles.svgStyle}>
-        <AnimatedPath animatedProps={pathProps} fill='black' />
+        <AnimatedPath animatedProps={pathProps} fill={"#7b5804"} />
       </Svg>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "orange",
-  },
   iconContainer: {
-    flexDirection: "row",
-    backgroundColor: "white",
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
     position: "absolute",
-    width: "100%",
-    height: 130,
-    borderRadius: 20,
+    flexDirection: "row",
+    backgroundColor: "gold",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.8,
+    shadowRadius: 6,
+    width: ICON_CONTAINER_WIDTH,
+    height: ICON_CONTAINER_HEIGHT,
+    bottom: ICON_CONTAINER_BOTTOM,
+    marginLeft: ICON_CONT_MARGIN_LEFT,
     paddingTop: ICON_CONTAINER_PADDING_TOP,
   },
   button: {
-    backgroundColor: "lightgrey",
     overflow: "hidden",
+    backgroundColor: "white",
     width: ICON_WIDTH,
     height: ICON_HEIGHT,
     marginLeft: ICON_MARGIN_LEFT,
   },
   fill: {
-    backgroundColor: "black",
+    backgroundColor: "#7b5804",
     width: ICON_WIDTH,
-    height: 30,
+    height: FILL_HEIGHT,
   },
   ball: {
-    backgroundColor: "black",
+    bottom: 0,
+    borderRadius: 21,
+    position: "absolute",
+    backgroundColor: "#7b5804",
     width: BALL_WIDTH_HEIGHT,
     height: BALL_WIDTH_HEIGHT,
-    position: "absolute",
-    borderRadius: 21,
-    bottom: 0,
     marginLeft: BALL_MARGIN_LEFT,
   },
   svgStyle: {
     height: WINDOW_HEIGHT,
     width: WINDOW_WIDTH,
     marginLeft: HILL_MARGIN_LEFT,
+  },
+  animatedSvg: {
+    position: "absolute",
+    marginLeft: ICON_MARGIN_LEFT,
   },
 });
 
