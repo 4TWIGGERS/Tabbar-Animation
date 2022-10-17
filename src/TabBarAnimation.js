@@ -25,16 +25,16 @@ const arr = new Array(ICON_COUNT).fill("");
 const ICON_WIDTH = 30;
 const ICON_HEIGHT = 30;
 const FILL_HEIGHT = 30;
-const HILL_WIDTH = 70;
+const HILL_WIDTH = 56;
 const BALL_WIDTH_HEIGHT = 8;
 const ICON_CONT_MARGIN_LEFT = 18;
-const ICON_CONTAINER_HEIGHT = 110;
+const ICON_CONTAINER_HEIGHT = 95;
 const ICON_CONTAINER_BOTTOM = 20;
 const ICON_CONTAINER_WIDTH = WINDOW_WIDTH - ICON_CONT_MARGIN_LEFT * 2;
 const HILL_MARGIN_TOP = WINDOW_HEIGHT - ICON_CONTAINER_BOTTOM;
 const ICON_MARGIN_LEFT = (ICON_CONTAINER_WIDTH - ICON_WIDTH * ICON_COUNT) / 4;
 const ICON_CONTAINER_PADDING_TOP =
-  ICON_CONTAINER_HEIGHT / 2.4 - ICON_HEIGHT / 2;
+  ICON_CONTAINER_HEIGHT / 2.2 - ICON_HEIGHT / 2;
 const HILL_MARGIN_LEFT =
   ICON_MARGIN_LEFT + ICON_CONT_MARGIN_LEFT - (HILL_WIDTH - ICON_WIDTH) / 2;
 const BALL_MARGIN_LEFT =
@@ -97,12 +97,12 @@ const IconsComp = ({ tappedIndex, hill, ballY, vertex, i, iconContValue }) => {
       iconY.value = withSpring(0);
     });
 
-    vertex.value = withTiming(-16, {}, () => {
+    vertex.value = withTiming(-12, {}, () => {
       ballY.value = withTiming(1, { duration: 376 }, () => {
         ballY.value = 0;
       });
-      vertex.value = withTiming(-40, {}, () => {
-        vertex.value = withTiming(-30);
+      vertex.value = withTiming(-30, {}, () => {
+        vertex.value = withTiming(-20);
       });
     });
   };
@@ -152,7 +152,7 @@ const TabBarAnimation = () => {
   const hill = useSharedValue(0);
   const hillX = useSharedValue(0);
   const ballY = useSharedValue(0);
-  const vertex = useSharedValue(-30);
+  const vertex = useSharedValue(-20);
   const tappedIndex = useSharedValue(0);
   const iconContValue = useSharedValue(0);
 
@@ -161,7 +161,7 @@ const TabBarAnimation = () => {
       tappedIndex.value * (ICON_MARGIN_LEFT + ICON_WIDTH)
     );
 
-    return `M ${hillX.value} ${HILL_MARGIN_TOP} c 35 ${vertex.value} 35 ${vertex.value} ${HILL_WIDTH} 0`;
+    return `M ${hillX.value} ${HILL_MARGIN_TOP} c 28 ${vertex.value} 28 ${vertex.value} ${HILL_WIDTH} 0`;
   });
 
   const pathProps = useAnimatedProps(() => {
@@ -177,7 +177,7 @@ const TabBarAnimation = () => {
           translateX: withTiming(hill.value * (ICON_MARGIN_LEFT + ICON_WIDTH)),
         },
         {
-          translateY: interpolate(ballY.value, [0, 1], [0, -52]),
+          translateY: interpolate(ballY.value, [0, 1], [0, -42]),
         },
       ],
     };
