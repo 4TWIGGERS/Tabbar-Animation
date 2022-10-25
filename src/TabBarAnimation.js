@@ -19,7 +19,7 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 const AnimatedButton = Animated.createAnimatedComponent(Pressable);
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
-
+const initialColor = "#7b5804";
 const ICON_COUNT = 3;
 const arr = new Array(ICON_COUNT).fill("");
 const ICON_WIDTH = 30;
@@ -32,15 +32,16 @@ const ICON_CONTAINER_HEIGHT = 95;
 const ICON_CONTAINER_BOTTOM = 20;
 const ICON_CONTAINER_WIDTH = WINDOW_WIDTH - ICON_CONT_MARGIN_LEFT * 2;
 const HILL_MARGIN_TOP = WINDOW_HEIGHT - ICON_CONTAINER_BOTTOM;
-const ICON_MARGIN_LEFT = (ICON_CONTAINER_WIDTH - ICON_WIDTH * ICON_COUNT) / 4;
+const ICON_MARGIN_LEFT =
+  (ICON_CONTAINER_WIDTH - ICON_WIDTH * ICON_COUNT) / (arr.length + 1);
 const ICON_CONTAINER_PADDING_TOP =
   ICON_CONTAINER_HEIGHT / 2.2 - ICON_HEIGHT / 2;
 const HILL_MARGIN_LEFT =
   ICON_MARGIN_LEFT + ICON_CONT_MARGIN_LEFT - (HILL_WIDTH - ICON_WIDTH) / 2;
 const BALL_MARGIN_LEFT =
-  ICON_MARGIN_LEFT + (ICON_WIDTH / 2 - BALL_WIDTH_HEIGHT / 2);
+  ICON_MARGIN_LEFT + (ICON_WIDTH - BALL_WIDTH_HEIGHT) / 2;
 
-const IconsComp = ({ tappedIndex, hill, ballY, vertex, i, iconContValue }) => {
+const IconsComp = ({ tappedIndex, ballY, vertex, i, iconContValue }) => {
   const iconY = useSharedValue(0);
   const fill = useSharedValue(0);
   const height = useSharedValue(0);
@@ -86,7 +87,6 @@ const IconsComp = ({ tappedIndex, hill, ballY, vertex, i, iconContValue }) => {
   });
 
   const _onPress = () => {
-    hill.value = i;
     tappedIndex.value = i;
 
     iconContValue.value = withTiming(!iconContValue.value, {}, () => {
@@ -149,7 +149,6 @@ const IconsComp = ({ tappedIndex, hill, ballY, vertex, i, iconContValue }) => {
 };
 
 const TabBarAnimation = () => {
-  const hill = useSharedValue(0);
   const hillX = useSharedValue(0);
   const ballY = useSharedValue(0);
   const vertex = useSharedValue(-20);
@@ -174,7 +173,9 @@ const TabBarAnimation = () => {
     return {
       transform: [
         {
-          translateX: withTiming(hill.value * (ICON_MARGIN_LEFT + ICON_WIDTH)),
+          translateX: withTiming(
+            tappedIndex.value * (ICON_MARGIN_LEFT + ICON_WIDTH)
+          ),
         },
         {
           translateY: interpolate(ballY.value, [0, 1], [0, -42]),
@@ -186,7 +187,7 @@ const TabBarAnimation = () => {
     return {
       transform: [
         {
-          scale: interpolate(iconContValue.value, [0, 1], [1, 0.99]),
+          scale: interpolate(iconContValue.value, [0, 1], [1, 0.98]),
         },
       ],
     };
@@ -198,14 +199,14 @@ const TabBarAnimation = () => {
       <Animated.View style={[styles.iconContainer, iconContainerStyle]}>
         {arr.map((_, i) => (
           <IconsComp
-            {...{ tappedIndex, hill, ballY, vertex, i, iconContValue }}
+            {...{ tappedIndex, ballY, vertex, i, iconContValue }}
             key={i}
           />
         ))}
         <Animated.View style={[styles.ball, ballStyle]} />
       </Animated.View>
       <Svg style={styles.svgStyle}>
-        <AnimatedPath animatedProps={pathProps} fill={"#7b5804"} />
+        <AnimatedPath animatedProps={pathProps} fill={initialColor} />
       </Svg>
     </View>
   );
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
     marginLeft: ICON_MARGIN_LEFT,
   },
   fill: {
-    backgroundColor: "#7b5804",
+    backgroundColor: initialColor,
     width: ICON_WIDTH,
     height: FILL_HEIGHT,
   },
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderRadius: 21,
     position: "absolute",
-    backgroundColor: "#7b5804",
+    backgroundColor: initialColor,
     width: BALL_WIDTH_HEIGHT,
     height: BALL_WIDTH_HEIGHT,
     marginLeft: BALL_MARGIN_LEFT,
