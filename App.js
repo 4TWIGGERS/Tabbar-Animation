@@ -1,10 +1,10 @@
 import { StyleSheet, View } from "react-native";
-import TabBarAnimation from "./src/TabBarAnimation";
+import TabBar from "./src/TabBar";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <TabBarAnimation />
+      <TabBar />
     </View>
   );
 }

@@ -148,7 +148,7 @@ const IconsComp = ({ tappedIndex, ballY, vertex, i, iconContValue }) => {
   );
 };
 
-const TabBarAnimation = () => {
+const TabBar = () => {
   const hillX = useSharedValue(0);
   const ballY = useSharedValue(0);
   const vertex = useSharedValue(-20);
@@ -263,4 +263,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TabBarAnimation;
+export default TabBar;
