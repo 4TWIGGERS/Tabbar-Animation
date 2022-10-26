@@ -63,7 +63,7 @@ const IconsComp = ({ tappedIndex, ballY, vertex, i, iconContValue }) => {
       ? withDelay(
           500,
           withTiming(fill.value, {
-            duration: 200,
+            duration: 240,
           })
         )
       : withTiming(fill.value);
