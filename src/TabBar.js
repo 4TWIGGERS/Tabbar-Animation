@@ -178,7 +178,7 @@ const TabBar = () => {
           ),
         },
         {
-          translateY: interpolate(ballY.value, [0, 1], [0, -42]),
+          translateY: interpolate(ballY.value, [0, 1], [0, -40.5]),
         },
       ],
     };
