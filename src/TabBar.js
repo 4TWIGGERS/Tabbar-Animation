@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, StyleSheet, View, Pressable, TouchableWithoutFeedback } from "react-native";
+import { Dimensions, StyleSheet, View, Pressable } from "react-native";
 import Animated, {
   interpolate,
   useDerivedValue,
@@ -10,7 +10,7 @@ import Animated, {
   withSpring,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import Svg, {G, Circle, Path, Defs, Rect, Mask } from "react-native-svg";
+import Svg, {Path, Defs, Rect, Mask } from "react-native-svg";
 import { D } from "./consts";
 
 import Navigation from "./Navigation";
