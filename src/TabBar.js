@@ -10,7 +10,7 @@ import Animated, {
   withSpring,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import Svg, { Path, Defs, Rect, Mask } from "react-native-svg";
+import Svg, {Path, Defs, Rect, Mask } from "react-native-svg";
 import { D } from "./consts";
 
 import Navigation from "./Navigation";
@@ -31,7 +31,7 @@ const ICON_CONT_MARGIN_LEFT = 18;
 const ICON_CONTAINER_HEIGHT = 95;
 const ICON_CONTAINER_BOTTOM = 20;
 const ICON_CONTAINER_WIDTH = WINDOW_WIDTH - ICON_CONT_MARGIN_LEFT * 2;
-const HILL_MARGIN_TOP = WINDOW_HEIGHT - ICON_CONTAINER_BOTTOM;
+const HILL_MARGIN_TOP = 28;
 const ICON_MARGIN_LEFT =
   (ICON_CONTAINER_WIDTH - ICON_WIDTH * ICON_COUNT) / (arr.length + 1);
 const ICON_CONTAINER_PADDING_TOP =
@@ -122,10 +122,10 @@ const IconsComp = ({ tappedIndex, ballY, vertex, i, iconContValue }) => {
         />
       </AnimatedButton>
       <AnimatedSvg
-        onPress={_onPress}
         height={30}
         width={30}
         style={[styles.animatedSvg, iconYStyle]}
+        onPress={_onPress}
       >
         <Defs>
           <Mask id='mask' x='0' y='0' height={30} width={30}>
@@ -193,32 +193,44 @@ const TabBar = () => {
     };
   });
 
+
+  const BottomTabs = () => (
+      <View style={styles.bottomTabsContainer}>
+        <Animated.View style={[styles.iconContainer, iconContainerStyle]}>
+          {arr.map((_, i) => (
+            <IconsComp
+              {...{ tappedIndex, ballY, vertex, i, iconContValue }}
+              key={i} />
+          ))}
+          <Animated.View style={[styles.ball, ballStyle]} />
+        </Animated.View>
+        <Svg style={styles.svgStyle}>
+          <AnimatedPath animatedProps={pathProps} fill={initialColor} />
+        </Svg>
+      </View>
+    )
+
+
   return (
-    <View style={styles.container}>
-      <Navigation {...{ tappedIndex }} />
-      <Animated.View style={[styles.iconContainer, iconContainerStyle]}>
-        {arr.map((_, i) => (
-          <IconsComp
-            {...{ tappedIndex, ballY, vertex, i, iconContValue }}
-            key={i}
-          />
-        ))}
-        <Animated.View style={[styles.ball, ballStyle]} />
-      </Animated.View>
-      <Svg style={styles.svgStyle}>
-        <AnimatedPath animatedProps={pathProps} fill={initialColor} />
-      </Svg>
-    </View>
-  );
-};
+      <View>
+        <Navigation {...{ tappedIndex }} />
+        <BottomTabs />
+      </View>
+    );
+  };
 
 const styles = StyleSheet.create({
+  bottomTabsContainer: {
+    height: WINDOW_HEIGHT,
+    width: WINDOW_WIDTH,
+    position: "absolute",
+    top: WINDOW_HEIGHT - ICON_CONTAINER_HEIGHT - ICON_CONTAINER_BOTTOM,
+  },
   iconContainer: {
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
     borderBottomLeftRadius: 50,
     borderBottomRightRadius: 50,
-    position: "absolute",
     flexDirection: "row",
     backgroundColor: "gold",
     shadowColor: "#000",
@@ -227,9 +239,11 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     width: ICON_CONTAINER_WIDTH,
     height: ICON_CONTAINER_HEIGHT,
-    bottom: ICON_CONTAINER_BOTTOM,
     marginLeft: ICON_CONT_MARGIN_LEFT,
     paddingTop: ICON_CONTAINER_PADDING_TOP,
+    position: "absolute",
+    top: 0,
+    zIndex: 2,
   },
   button: {
     overflow: "hidden",
@@ -253,9 +267,12 @@ const styles = StyleSheet.create({
     marginLeft: BALL_MARGIN_LEFT,
   },
   svgStyle: {
-    height: WINDOW_HEIGHT,
-    width: WINDOW_WIDTH,
     marginLeft: HILL_MARGIN_LEFT,
+    zIndex: 2,
+    position: "absolute",
+    height: FILL_HEIGHT,
+    width: '100%',
+    top: ICON_CONTAINER_BOTTOM + ICON_CONTAINER_HEIGHT / 2
   },
   animatedSvg: {
     position: "absolute",
